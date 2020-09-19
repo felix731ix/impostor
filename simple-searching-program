@@ -1,0 +1,167 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+struct data{
+	int number;
+	data *left;
+	data *right;
+};
+
+struct data *newNode(int x){
+	data *baru=(data *)malloc(sizeof(data));
+	
+	baru->number = x;
+	baru->left=NULL;
+	baru->right=NULL;
+	
+}
+
+data *insertNode(data *root,int x){
+	if(root==NULL){
+		return newNode(x);
+	}
+	else if(x<root->number){
+		root->left = insertNode(root->left,x);
+	}
+	else if(x>root->number){
+		root->right = insertNode(root->right,x);
+	}
+	return root;
+}
+
+data *deleteNode(data *root, int x){
+	
+	if(root==NULL){
+		printf("Data Not Found\n");
+		getchar();
+		return NULL;
+	}
+	
+	else if(x<root->number){
+		root->left = deleteNode(root->left,x);
+	}
+	
+	else if(x>root->number){
+		root->right = deleteNode(root->right,x);
+	}
+	
+	else{
+		if(root->left==NULL && root->right==NULL){
+			root = NULL;
+			free(root);
+		}
+		else if(root->left==NULL || root->right==NULL){
+			data *child;
+			if(root->left==NULL){
+				root->left=child;
+			}
+			else{
+				root->right=child;
+			}
+			free(root);
+			*root = *child;
+		}
+		
+		else{
+			data *child = root->left;
+			
+			while(child->right!=NULL){
+				child=child->right;
+			}
+			
+			root->number=child->number;
+			
+			root->left=deleteNode(root->left,child->number);
+		}
+		printf("Data deleted\n");getchar();
+	}
+	
+	return root;
+}
+
+void InOrder(data *root){
+	if(root==NULL){
+		return;
+	}
+	InOrder(root->left);
+	printf("%d\n",root->number);
+	InOrder(root->right);
+}
+
+data *searching(data *root, int x){
+	if(root == NULL){
+		printf("Data Not Found\n");
+		return NULL;
+	}
+	if(root->number == x){
+		printf("Data Found for %d\n",root->number);
+		return NULL;
+	}
+	else if(x < root->number){
+		root->left = searching(root->left,x);
+	}
+	else if(x > root->number){
+		root->right = searching(root->right,x);
+	}
+	return root;
+}
+
+void header(){
+	printf("Felix Rustan - 2301886140\n");
+	printf("Welcome to my simple searching program\n");
+}
+
+int main(){
+	
+	int menu=0;
+	int dataInput=0;
+	bool set=true;
+	data *root=NULL;
+	
+	while(set == true){
+		header();
+		printf("1. Insert Number\n");
+		printf("2. Delete Number\n");
+		printf("3. Search Number\n");
+		printf("4. Print All Number\n");
+		printf("5. Exit\n");
+		printf("Choice>> ");
+		scanf("%d",&menu);getchar();
+		
+		switch(menu){
+			case 1:
+				printf("Input Number to add: ");
+				scanf("%d",&dataInput);getchar();
+				root = insertNode(root,dataInput);
+				break;
+			
+			case 2:
+				printf("Input Number to delete: ");
+				scanf("%d",&dataInput);getchar();
+				root = deleteNode(root,dataInput);
+				break;
+			
+			case 3:
+				printf("Input Number to search: ");
+				scanf("%d",&dataInput);getchar();
+				root = searching(root,dataInput);
+				getchar();
+				break;
+				
+			case 4:
+				if(root == NULL)
+					printf("Data is EMPTY\n");
+				
+				else
+					InOrder(root);
+				
+				getchar();
+				break;
+				
+			case 5:
+				set = false;
+				break;
+		}
+	system("cls");		
+	}
+}
